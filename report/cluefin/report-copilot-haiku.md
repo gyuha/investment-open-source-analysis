@@ -1,4 +1,4 @@
-# Cluefin 종합 기술 문서 (Copilot Grok Generated)
+# Cluefin 종합 기술 문서 (Copilot Haiku Generated)
 
 > Clearly Looking U Entered Financial Information – 한국 금융 투자 분석, 자동화, ML/AI 인사이트를 위한 **Python 기반 금융 엔지니어링 모노레포**.
 >
@@ -93,8 +93,6 @@ flowchart LR
     ML --> SHAP[(SHAP Explainer)]
     OpenAPI --> CORE
 ```
-
-### 2.2 구성 요소 상호작용 시퀀스 (예: 기술 분석 + ML + AI)
 ```mermaid
 sequenceDiagram
     participant U as User
@@ -152,7 +150,7 @@ flowchart TB
 | 패키지 관리 | uv workspace |
 | CLI UI | Click, Rich, plotext |
 | 분석 | pandas, TA-Lib |
-| ML | LightGBM, numpy, scikit-learn, SHAP, imbalanced-learn (SMOTE) *(가정: feature_engineer 내 사용)* |
+| ML | LightGBM, numpy, scikit-learn, SHAP, imbalanced-learn (SMOTE) |
 | API 통신 | requests, rate limiting(TokenBucket), caching(SimpleCache) |
 | 모델링 구조 | Pydantic(설정 & 타입), LightGBM Wrapper |
 | 품질 | pytest, requests-mock, ruff, coverage |
@@ -397,7 +395,6 @@ cluefin-cli fa 005930 --year 2023 --report annual --max-shareholders 3
 |------|------|----------|------|
 | `ta` | 기술적/시장/ML/AI 분석 | `--chart`, `--ai-analysis`, `--ml-predict`, `--feature-importance`, `--shap-analysis` | 종합 분석 엔트리 |
 | `fa` | 펀더멘털/DART 공시 분석 | `--year`, `--report`, `--max-shareholders` | 연간/분기 보고서 |
-| (예정) `inquiry` | 인터랙티브 시장 탐색 | (추가 예정) | 메뉴 기반 |
 
 ### 5.3 ML 예측 결과 해석
 - Signal: BUY/SELL (분류 결과)
@@ -410,34 +407,14 @@ cluefin-cli fa 005930 --year 2023 --report annual --max-shareholders 3
 from cluefin_openapi.kiwoom import Client as KiwoomClient
 
 client = KiwoomClient(token="YOUR_TOKEN", env="prod", enable_caching=True, debug=False)
-# 계좌 정보 가져오기
-account_info = client.account.get_overview()  # (가정: 실제 메서드 예시)
-# 차트 데이터
 chart_df = client.chart.get_daily_series(stock_code="005930", period="1M")
-# 랭킹 정보
-ranking = client.rank_info.get_top_market_gainers(limit=10)
-```
-
-```python
-# 예외 처리 패턴
-try:
-    data = client.chart.get_daily_series(stock_code="005930", period="3M")
-except KiwoomRateLimitError as e:
-    # 재시도 또는 대기 로직
-    print("Rate limit hit, retry after:", e.retry_after)
-except KiwoomAuthenticationError:
-    print("Authentication failed; refresh token")
 ```
 
 ### 5.5 기술 지표 확장
-`indicators.py` 또는 `feature_engineering.py` 내 함수 추가:
 ```python
 def calculate_new_indicator(df):
-    # 입력: OHLCV DataFrame
-    # 출력: Series
     return (df['close'] - df['low']) / (df['high'] - df['low']).clip(lower=1e-6)
 ```
-등록 후 `TechnicalAnalyzer.calculate_all` 또는 FeatureEngineer 내부에 통합.
 
 ### 5.6 구성 옵션 (ML)
 | 옵션 | 위치 | 설명 |
@@ -445,19 +422,12 @@ def calculate_new_indicator(df):
 | `n_estimators` | LightGBM params | 학습 트리 수 |
 | `num_leaves` | LightGBM params | 모델 복잡도 제어 |
 | `learning_rate` | LightGBM params | 수렴 속도 |
-| `feature_fraction` | LightGBM params | 랜덤 피처 서브샘플 비율 |
-| `class_weight` | 동적 계산 | 심한 불균형 시 자동 적용 |
 | `use_smote` | `train_model` 인자 | 소수 클래스 오버샘플링 |
 
 ### 5.7 SHAP 활용 고급 기능
 - Top-N 중요도 표시: `display_feature_importance(top_n=15)`
 - 개별 예측 설명: 특정 인덱스 샘플에 대한 SHAP 값 표출
-- 성능 주의: 매우 많은 피처/샘플 시 계산 시간 증가 → Background 세트 제한(최대 100 샘플)
-
-### 5.8 출력 형식 개선 (Rich)
-- 표(Table): 정렬/색상으로 시각 강조
-- 패널(Panel): AI 인사이트/ML Summary
-- 경고 스타일: yellow, 오류: red
+- 성능 주의: Background 세트 제한(최대 100 샘플)
 
 ---
 ## 6. 개발 지침 (Development Guidelines)
@@ -471,98 +441,81 @@ uv sync --all-packages
 ```
 
 ### 6.2 코드 스타일 & 린트
-- Ruff 설정: line-length 120, 선택 규칙: E,F,W,B,Q,I,ASYNC,T20
-- Ignore: F401 (미사용 import), E501 (line length 예외 일부)
+- Ruff 설정: line-length 120
 - 포맷: `uv run ruff format .`
 - 자동 수정: `uv run ruff check . --fix`
 
 ### 6.3 테스트 전략
-| 구분 | 설명 | 명령 |
-|------|------|------|
-| 전체 테스트 | 모든 패키지 | `uv run pytest` |
-| 단위 테스트 | 빠른 검증 | `uv run pytest -m "not integration"` |
-| 통합 테스트 | 실제 API 의존(키 필요) | `uv run pytest -m "integration"` |
-| 특정 경로 | 특정 모듈 | `uv run pytest packages/cluefin-openapi/tests/kiwoom -v` |
-
-- 마커 사용: `integration`, `slow`
-- ML 파이프라인 테스트: `apps/cluefin-cli/tests/unit/ml/test_ml_pipeline.py`
+| 구분 | 명령 |
+|------|------|
+| 전체 테스트 | `uv run pytest` |
+| 단위 테스트 | `uv run pytest -m "not integration"` |
+| 통합 테스트 | `uv run pytest -m "integration"` |
 
 ### 6.4 새로운 API 모듈 추가 절차
 1. `packages/cluefin-openapi/src/cluefin_openapi/<new_api>/` 디렉토리 생성
 2. 인증/엔드포인트 별 `_client.py`, `_model.py`, `_exceptions.py` 작성
-3. 공통 예외 패턴/RateLimiter 재사용
-4. Pydantic 모델로 응답 구조 정의 (한글 alias 고려 가능)
-5. 유닛 테스트 (requests-mock) & 통합 테스트 추가
+3. Pydantic 모델로 응답 구조 정의
+4. 유닛 테스트 (requests-mock) & 통합 테스트 추가
 
 ### 6.5 ML 기능 확장
-- 추가 모델: `ml/models.py` 내 새 클래스 (예: CatBoostPredictor) 작성 후 `StockMLPredictor`에 주입 옵션 추가
-- 피처 추가: `feature_engineering.py` 내 생성 함수 구현 후 `prepare_features`에 통합
-- 진단 개선: `diagnostics.py` 패턴 따라 새 메트릭 추가 (예: PSI, drift 검출)
+- 추가 모델: `ml/models.py` 내 새 클래스 작성 후 `StockMLPredictor`에 주입
+- 피처 추가: `feature_engineering.py` 내 생성 함수 구현
+- 진단 개선: `diagnostics.py` 패턴 따라 새 메트릭 추가
 
-### 6.6 기여 가이드 (간략)
+### 6.6 기여 가이드
 | 단계 | 설명 |
 |------|------|
 | Fork & Branch | `feat/<설명>` 브랜치 명명 |
 | Issue 연계 | 기능/버그 명확화 |
 | 코드 작성 | 스타일/테스트 커버리지 유지 |
-| 테스트 실행 | 단위 + 필요한 통합 (API 키 분리) |
 | PR 설명 | 변경 목적/방법/테스트 결과 포함 |
 
 ---
 ## 7. 추가 정보 (Additional Information)
 ### 7.1 성능 고려사항
-| 항목 | 전략 | 세부 |
-|------|------|------|
-| HTTP 재사용 | `requests.Session()` | 커넥션 풀로 latency 감소 |
-| Rate Limiting | TokenBucket | 초당 토큰 재충전, 버스트 처리 |
-| Caching | SimpleCache | 반복 POST 응답 저장 (TTL 기본 300s) |
-| 지표 계산 | 벡터화(pandas) | 루프 최소화 |
-| SHAP | Background 샘플 제한 | 계산 시간/메모리 제어 |
+| 항목 | 전략 |
+|------|------|
+| HTTP 재사용 | `requests.Session()` 커넥션 풀 |
+| Rate Limiting | TokenBucket 초당 토큰 재충전 |
+| Caching | SimpleCache 반복 POST 응답 저장 |
+| 지표 계산 | 벡터화(pandas) 루프 최소화 |
+| SHAP | Background 샘플 제한 (최대 100) |
 
 ### 7.2 보안 고려사항
 - API Key는 절대 Git 커밋 금지 (`.env`, `.gitignore`)
 - 로깅 레벨: debug 모드에서만 민감 요청 헤더 출력
 - 예측/분석 결과는 투자 조언 아님 (README Disclaimer 반영)
-- 외부 API 오류 시 Graceful degradation (캐시/재시도 후 사용자 경고)
+- 외부 API 오류 시 Graceful degradation
 
 ### 7.3 향후 로드맵 (제안)
 | 항목 | 우선순위 | 설명 |
 |------|---------|------|
-| 백테스트 모듈 | 높음 | 전략 성과 검증 및 리포트 자동 생성 |
-| 포트폴리오 최적화 | 중간 | 샤프/변동성 기반 자산 배분 기능 |
-| 웹 대시보드 | 중간 | Streamlit/FastAPI 기반 시각화 포털 |
+| 백테스트 모듈 | 높음 | 전략 성과 검증 및 리포트 생성 |
+| 포트폴리오 최적화 | 중간 | 샤프/변동성 기반 자산 배분 |
+| 웹 대시보드 | 중간 | Streamlit/FastAPI 기반 포털 |
 | 모델 레지스트리 | 중간 | 버전 관리 + 메트릭 추적 |
 | 실시간 WebSocket | 낮음 | 체결/호가 스트림 처리 |
-| 강화학습 전략 | 연구 | 정책 기반 트레이딩 실험 |
 
 ### 7.4 라이선스 & 저작권
 - MIT License (2025 Hangoo Kang)
-- 사용자 책임: 교육/연구 목적 한정, 금융 손실 면책
+- 교육/연구 목적 한정, 금융 손실 면책
 
-### 7.5 용어 사전 (Glossary)
+### 7.5 용어 사전
 | 용어 | 정의 |
 |------|------|
 | OHLCV | Open/High/Low/Close/Volume 가격 구조 |
 | SHAP | Shapley Values 기반 피처 기여량 해석 방법 |
 | SMOTE | Synthetic Minority Oversampling Technique |
 | TimeSeriesSplit | 시계열 교차검증 방식 (데이터 누출 방지) |
-| Feature Importance | 모델 트리 분할 기여 기반 피처 상대적 중요도 |
 
 ---
-## 8. 요약 (Summary)
-Cluefin은 한국 금융 시장 데이터 통합 → 기술/펀더멘털 분석 → ML 예측 → AI 인사이트까지 단일 워크플로우를 제공하는 구조화된 모노레포입니다. 확장성과 유지보수성을 고려한 계층화, 타입 안전 클라이언트, 성능 최적화(세션/캐시/리밋), 불균형 및 시계열 특성을 반영한 ML 설계, SHAP 해석 가능성 등 현대 금융 데이터 응용에 필요한 핵심 요소를 포함하고 있습니다.
-
----
-## 9. 빠른 실행 참고 (Quick Commands)
+## 8. 빠른 실행 참고 (Quick Commands)
 ```bash
-# 기술 분석 풀세트
 cluefin-cli ta 005930 --chart --ai-analysis --ml-predict --shap-analysis
-# 펀더멘털 분석
 cluefin-cli fa 005930 --year 2023 --report annual
-# 테스트 실행 (단위)
 uv run pytest -m "not integration"
-# 린트 & 포맷
 uv run ruff check . --fix && uv run ruff format .
 ```
 
-> 생성된 문서는 코드 베이스(2025-10-19 기준) 분석과 합리적 추론을 기반으로 작성되었습니다. 추가 세부 API 메서드는 실제 구현을 참고하여 확장 가능합니다.
+> 생성된 문서는 코드 베이스(2025-10-19 기준) 분석과 합리적 추론을 기반으로 작성되었습니다.

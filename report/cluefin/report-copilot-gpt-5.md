@@ -68,22 +68,22 @@ flowchart LR
     subgraph User
         A[Terminal CLI]
     end
-    subgraph CLI[cluefin-cli Application]
-        CMD[Commands Layer]\n(technical_analysis, fundamental_analysis)
-        DATA[DataFetcher]\n(async API orchestration)
-        TA[TechnicalAnalyzer]\n(Indicators)
-        CH[ChartRenderer]\n(ASCII Charts)
-        ML[StockMLPredictor]\n(Features+Model+SHAP)
-        AI[AIAnalyzer]\n(GPT Insights)
+    subgraph CLI["cluefin-cli Application"]
+        CMD["Commands Layer<br/>(technical_analysis, fundamental_analysis)"]
+        DATA["DataFetcher<br/>(async API orchestration)"]
+        TA["TechnicalAnalyzer<br/>(Indicators)"]
+        CH["ChartRenderer<br/>(ASCII Charts)"]
+        ML["StockMLPredictor<br/>(Features+Model+SHAP)"]
+        AI["AIAnalyzer<br/>(GPT Insights)"]
     end
-    subgraph OpenAPI[cluefin-openapi Package]
+    subgraph OpenAPI["cluefin-openapi Package"]
         KIW[Kiwoom Client]
         KIS[KIS Client]
         KRX[KRX Client]
         DART[DART Client]
-        CORE[Common Utilities]\n(RateLimiter, Cache, Exceptions)
+        CORE["Common Utilities<br/>(RateLimiter, Cache, Exceptions)"]
     end
-    EXT[External APIs]\n(Kiwoom,KIS,KRX,DART,OpenAI)
+    EXT["External APIs<br/>(Kiwoom,KIS,KRX,DART,OpenAI)"]
 
     A --> CMD --> DATA --> OpenAPI --> EXT
     CMD --> TA
@@ -129,20 +129,20 @@ sequenceDiagram
 ### 2.3 데이터 흐름 (ML 파이프라인 Internal)
 ```mermaid
 flowchart TB
-    D[Raw OHLCV DataFrame] --> IND[Attach Basic Indicators]
-    IND --> FE1[TA-Lib Feature Generation]
-    FE1 --> FE2[Custom Features (ratios, volatility, lags)]
-    FE2 --> CLEAN[Missing Value Handling ffill/bfill]
-    CLEAN --> TARGET[Create Binary Target (price_up/down)]
-    TARGET --> DIAG[Diagnostics (imbalance check)]
-    DIAG -->|Severe imbalance| SMOTE[SMOTE Oversampling]
-    DIAG -->|Mild| WEIGHT[Class Weights]
-    SMOTE --> SPLIT[TimeSeriesSplit]
+    D["Raw OHLCV<br/>DataFrame"] --> IND["Attach Basic<br/>Indicators"]
+    IND --> FE1["TA-Lib Feature<br/>Generation"]
+    FE1 --> FE2["Custom Features<br/>(ratios, volatility, lags)"]
+    FE2 --> CLEAN["Missing Value Handling<br/>(ffill/bfill)"]
+    CLEAN --> TARGET["Create Binary Target<br/>(price_up/down)"]
+    TARGET --> DIAG["Diagnostics<br/>(imbalance check)"]
+    DIAG -->|Severe imbalance| SMOTE["SMOTE<br/>Oversampling"]
+    DIAG -->|Mild| WEIGHT["Class<br/>Weights"]
+    SMOTE --> SPLIT["TimeSeriesSplit"]
     WEIGHT --> SPLIT
-    SPLIT --> TRAIN[LightGBM Train]
-    TRAIN --> METRICS[Validation Metrics]
-    TRAIN --> EXPL[SHAP Explainer Init]
-    EXPL --> PRED[Predict + SHAP Values]
+    SPLIT --> TRAIN["LightGBM<br/>Train"]
+    TRAIN --> METRICS["Validation<br/>Metrics"]
+    TRAIN --> EXPL["SHAP Explainer<br/>Init"]
+    EXPL --> PRED["Predict +<br/>SHAP Values"]
 ```
 
 ### 2.4 기술 스택
@@ -202,11 +202,11 @@ flowchart TB
 ### 2.9 성능 고려 흐름
 ```mermaid
 flowchart LR
-    RATE[TokenBucket] --> POST[_post]
-    CACHE{Cache Enabled?} -->|Hit| RESP[Return Cached]
-    CACHE -->|Miss| SEND[HTTP Request]
-    SEND --> PARSE[JSON->Model]
-    PARSE --> STORE[Cache Set]
+    RATE["TokenBucket"] --> POST["_post"]
+    CACHE{Cache Enabled?} -->|Hit| RESP["Return<br/>Cached"]
+    CACHE -->|Miss| SEND["HTTP<br/>Request"]
+    SEND --> PARSE["JSON->Model"]
+    PARSE --> STORE["Cache Set"]
     STORE --> RESP
 ```
 
