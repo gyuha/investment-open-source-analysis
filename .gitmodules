@@ -1,12 +1,12 @@
 [submodule "Finance"]
-	path = Finance
+	path = source/Finance
 	url = https://github.com/shashankvemuri/Finance.git
 [submodule "ChatGPT-Micro-Cap-Experiment"]
-	path = ChatGPT-Micro-Cap-Experiment
+	path = source/ChatGPT-Micro-Cap-Experiment
 	url = https://github.com/LuckyOne7777/ChatGPT-Micro-Cap-Experiment.git
 [submodule "cluefin"]
-	path = cluefin
+	path = source/cluefin
 	url = https://github.com/kgcrom/cluefin.git
 [submodule "Kronos"]
-	path = Kronos
+	path = source/Kronos
 	url = https://github.com/shiyu-coder/Kronos.git
