@@ -678,7 +678,7 @@ graph TB
 ### 📦 모듈 상호 의존성
 
 ```mermaid
-graph TD
+graph LR
     subgraph "핵심 모듈"
         A[ta_functions.py] --> B[기술적 지표 80개]
         C[tickers.py] --> D[종목 리스트 관리]
