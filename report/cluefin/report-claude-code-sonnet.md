@@ -172,7 +172,7 @@ print(f"삼성전자 현재가: {price.body.output.stck_prpr}원")
 ### 고수준 시스템 아키텍처
 
 ```mermaid
-graph TB
+graph LR
     subgraph "사용자 인터페이스"
         CLI[cluefin-cli<br/>Rich 기반 터미널 UI]
         API_USER[외부 애플리케이션<br/>Python API 사용]
@@ -514,7 +514,7 @@ sequenceDiagram
 #### 데이터 흐름: API → 분석 → 시각화
 
 ```mermaid
-flowchart LR
+flowchart TB
     A[금융 API] -->|Raw JSON| B[Pydantic Model]
     B -->|Validated Data| C[Pandas DataFrame]
     C -->|OHLCV Data| D[Indicator Calculator]
@@ -702,7 +702,7 @@ cluefin/
 ### 프로젝트 계층 구조 다이어그램
 
 ```mermaid
-graph TD
+graph LR
     subgraph "Workspace Root"
         ROOT[pyproject.toml<br/>워크스페이스 설정]
         LOCK[uv.lock<br/>의존성 잠금]

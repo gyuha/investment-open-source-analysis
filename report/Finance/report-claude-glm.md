@@ -196,7 +196,7 @@ tweepy==4.14.0            # Twitter API
 ### 🔗 종속성 관계
 
 ```mermaid
-graph TD
+graph LR
     subgraph "핵심 데이터 라이브러리"
         A[pandas] --> B[numpy]
         A --> C[matplotlib]

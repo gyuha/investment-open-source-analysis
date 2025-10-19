@@ -361,7 +361,7 @@ Kronos/
 ### 3.2 프로젝트 구조 설계 근거
 
 ```mermaid
-graph TD
+graph LR
     A[Kronos 프로젝트] --> B[핵심 구현]
     A --> C[학습 및 파인튜닝]
     A --> D[사용자 인터페이스]
@@ -1400,11 +1400,11 @@ graph TB
     end
 
     subgraph "백엔드 (Flask)"
-        B1[app.py] --> B2[/api/data-files]
-        B1 --> B3[/api/load-data]
-        B1 --> B4[/api/load-model]
-        B1 --> B5[/api/predict]
-        B1 --> B6[/api/model-status]
+        B1[app.py] --> B2["/api/data-files"]
+        B1 --> B3["/api/load-data"]
+        B1 --> B4["/api/load-model"]
+        B1 --> B5["/api/predict"]
+        B1 --> B6["/api/model-status"]
     end
 
     subgraph "모델 레이어"
