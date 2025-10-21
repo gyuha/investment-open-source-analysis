@@ -89,6 +89,10 @@ git submodule update --remote
 cd Finance
 git pull origin main
 ```
+## 추가 참고
+- [파이썬으로 배우는 한국투자증권 Websocket 사용 예제](https://wikidocs.net/book/7847)
+
+
 
 ## 라이선스
 
