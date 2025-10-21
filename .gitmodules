@@ -13,3 +13,6 @@
 [submodule "jocoding-bithumb"]
 	path = source/jocoding-bithumb
 	url = https://github.com/youtube-jocoding/python-bithumb.git
+[submodule "source/jocoding-bithumb"]
+	path = source/jocoding-bithumb
+	url = https://github.com/youtube-jocoding/python-bithumb.git
