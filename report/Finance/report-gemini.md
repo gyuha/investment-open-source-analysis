@@ -15,7 +15,7 @@
 ### 1.3. 핵심 기능
 
 *   **주식 스크리닝:** 기술적 지표(RSI, 이동 평균 등)와 기본적 지표(PER, PBR 등)를 기반으로 특정 기준을 충족하는 주식을 필터링합니다.
-*   **데이터 수집:** `yfinance`, `beautifulsoup4`, `selenium` 등을 사용하여 금융 웹사이트(Finviz, Yahoo Finance 등) 및 API에서 주가, 기업 정보, 뉴스, 내부자 거래 데이터 등을 수집합니다.
+*   **데이터 수집:** `"yfinance"`, `beautifulsoup4`, `selenium` 등을 사용하여 금융 웹사이트("Finviz", Yahoo Finance 등) 및 API에서 주가, 기업 정보, 뉴스, 내부자 거래 데이터 등을 수집합니다.
 *   **머신러닝 예측:** ARIMA, LSTM, Prophet과 같은 시계열 모델과 신경망, 회귀 분석 등을 사용하여 주가 방향성을 예측하고 주식을 분류합니다.
 *   **포트폴리오 전략 및 분석:** 이동 평균 교차, 볼린저 밴드 등 다양한 거래 전략을 시뮬레이션하고 백테스트합니다. 또한, 몬테카를로 시뮬레이션, 최적 포트폴리오 계산, 위험 관리 분석을 수행합니다.
 *   **기술적 지표 시각화:** 이동 평균(SMA, EMA), RSI, MACD, 볼린저 밴드 등 50개 이상의 기술적 지표를 계산하고 시각화합니다.
@@ -40,7 +40,7 @@
 이 프로젝트는 중앙화된 애플리케이션이 아닌, 개별적으로 실행되는 스크립트들의 집합입니다. 아키텍처는 각 스크립트가 외부 데이터 소스에서 데이터를 가져와 분석을 수행하고, 결과를 사용자에게 파일(CSV, 그래프) 또는 터미널 출력으로 제공하는 간단한 구조입니다.
 
 ```mermaid
-graph TD
+graph LR
     subgraph User
         A[사용자]
     end
@@ -57,8 +57,8 @@ graph TD
     end
 
     subgraph "Data Sources"
-        J[금융 API <br/>(yfinance, Quandl)]
-        K[웹사이트 <br/>(Finviz, Yahoo Finance)]
+        J["금융 API <br/>(yfinance, Quandl)"]
+        K["웹사이트 <br/>(Finviz, Yahoo Finance)"]
     end
 
     subgraph "Output"
@@ -93,7 +93,7 @@ graph TD
 *   **주요 라이브러리:**
     *   **데이터 분석 및 처리:** `pandas`, `numpy`, `scipy`
     *   **머신러닝:** `tensorflow`, `keras`, `scikit-learn`, `fbprophet`
-    *   **데이터 수집:** `yfinance`, `pandas_datareader`, `beautifulsoup4`, `selenium`, `requests`
+    *   **데이터 수집:** `"yfinance"`, `pandas_datareader`, `beautifulsoup4`, `selenium`, `requests`
     *   **시각화:** `matplotlib`, `mplfinance`, `seaborn`
     *   **백테스팅:** `backtrader`, `pyfolio`
     *   **웹 프레임워크 (일부 스크립트):** `streamlit`, `flask`
@@ -110,7 +110,7 @@ graph TD
 ### 2.4. 구성 요소 상호작용 및 데이터 흐름
 
 1.  **사용자 입력:** 사용자는 실행할 Python 스크립트를 선택하고, 필요한 경우 명령줄 인수를 통해 주식 티커, 기간 등 파라미터를 전달합니다.
-2.  **데이터 수집:** 스크립트는 `yfinance`, `requests`, `selenium` 등의 라이브러리를 사용하여 외부 금융 API나 웹사이트에서 원시 데이터(주가, 재무제표, 뉴스 기사 등)를 가져옵니다.
+2.  **데이터 수집:** 스크립트는 `"yfinance"`, `requests`, `selenium` 등의 라이브러리를 사용하여 외부 금융 API나 웹사이트에서 원시 데이터(주가, 재무제표, 뉴스 기사 등)를 가져옵니다.
 3.  **데이터 처리 및 분석:** `pandas`를 사용하여 데이터를 정제하고 구조화합니다. 그 후, `numpy`, `scikit-learn`, `statsmodels` 등을 이용해 통계 분석, 머신러닝 모델 학습, 기술적 지표 계산 등 핵심 로직을 수행합니다.
 4.  **결과 생성 및 출력:** 분석 결과는 `matplotlib`을 통해 그래프로 시각화되어 파일로 저장되거나, `pandas`를 통해 CSV 파일로 저장됩니다. 간단한 결과는 터미널에 직접 출력됩니다.
 
@@ -186,11 +186,11 @@ graph TD
 
 모든 스크립트는 독립적으로 실행할 수 있습니다. 터미널에서 `python` 명령어와 함께 스크립트 경로를 입력하여 실행합니다.
 
-**예제 1: Finviz에서 성장주 스크리닝**
+**예제 1: "Finviz"에서 성장주 스크리닝**
 ```bash
 python find_stocks/finviz_growth_screener.py
 ```
-이 스크립트는 Finviz.com에서 특정 성장 기준을 만족하는 주식 목록을 가져와 터미널에 출력합니다.
+이 스크립트는 "Finviz".com에서 특정 성장 기준을 만족하는 주식 목록을 가져와 터미널에 출력합니다.
 
 **예제 2: 특정 주식의 RSI 계산 및 시각화**
 대부분의 기술적 지표 스크립트는 내부적으로 특정 티커(예: 'AAPL')를 하드코딩하여 사용합니다. 사용하려면 코드를 직접 수정해야 할 수 있습니다.
@@ -256,3 +256,4 @@ python technical_indicators/RSI.py
 ### 7.4. 라이선스
 
 이 프로젝트는 **MIT 라이선스** 하에 배포됩니다. 자세한 내용은 `LICENSE` 파일을 참조하세요.
+
