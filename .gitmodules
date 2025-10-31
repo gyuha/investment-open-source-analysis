@@ -16,3 +16,6 @@
 [submodule "tensortrade"]	
 	path = source/tensortrade
 	url = https://github.com/tensortrade-org/tensortrade.git
+[submodule "source/tensortrade"]
+	path = source/tensortrade
+	url = https://github.com/tensortrade-org/tensortrade
