@@ -13,4 +13,6 @@
 [submodule "jocoding-bithumb"]
 	path = source/jocoding-bithumb
 	url = https://github.com/youtube-jocoding/python-bithumb.git
-	
+[submodule "tensortrade"]	
+	path = source/tensortrade
+	url = https://github.com/tensortrade-org/tensortrade.git
