@@ -1,0 +1,180 @@
+# Git Submodule 관리를 위한 Taskfile
+# 이 Taskfile은 git submodule 관련 유용한 명령어들을 모아놓았습니다.
+
+version: '3'
+
+tasks:
+  # 모든 submodule을 최신 소스로 업데이트
+  update-all:
+    desc: "모든 submodule을 최신 소스로 업데이트합니다"
+    cmds:
+      - git submodule update --init --recursive
+      - git submodule update --remote --merge
+    silent: false
+
+  # 특정 submodule을 최신 소스로 업데이트
+  update:
+    desc: "특정 submodule을 최신 소스로 업데이트합니다 (사용법: task update -- submodule-name)"
+    vars:
+      SUBMODULE: "{{.CLI_ARGS}}"
+    cmds:
+      - git submodule update --init --recursive {{.SUBMODULE}}
+      - git submodule update --remote --merge {{.SUBMODULE}}
+    silent: false
+
+  # 모든 submodule을 초기화
+  init:
+    desc: "모든 submodule을 초기화합니다"
+    cmds:
+      - git submodule init
+      - git submodule update --init --recursive
+    silent: false
+
+  # 특정 submodule을 초기화
+  init-submodule:
+    desc: "특정 submodule을 초기화합니다 (사용법: task init-submodule -- submodule-name)"
+    vars:
+      SUBMODULE: "{{.CLI_ARGS}}"
+    cmds:
+      - git submodule init {{.SUBMODULE}}
+      - git submodule update --init --recursive {{.SUBMODULE}}
+    silent: false
+
+  # submodule 상태 확인
+  status:
+    desc: "모든 submodule의 상태를 확인합니다"
+    cmds:
+      - git submodule status
+    silent: false
+
+  # submodule 상세 정보 확인
+  summary:
+    desc: "모든 submodule의 상세 정보를 확인합니다"
+    cmds:
+      - git submodule summary
+    silent: false
+
+  # 모든 submodule을 재귀적으로 업데이트
+  update-recursive:
+    desc: "모든 submodule과 그 하위 submodule들을 재귀적으로 업데이트합니다"
+    cmds:
+      - git submodule update --init --recursive --remote
+    silent: false
+
+  # 모든 submodule을 pull
+  pull-all:
+    desc: "모든 submodule에서 git pull을 실행합니다"
+    cmds:
+      - git submodule foreach git pull origin main
+    silent: false
+
+  # 특정 브랜치로 모든 submodule을 pull
+  pull-branch:
+    desc: "특정 브랜치로 모든 submodule에서 git pull을 실행합니다 (사용법: task pull-branch -- branch-name)"
+    vars:
+      BRANCH: "{{.CLI_ARGS}}"
+    cmds:
+      - git submodule foreach git pull origin {{.BRANCH}}
+    silent: false
+
+  # submodule 추가
+  add:
+    desc: "새로운 submodule을 추가합니다 (사용법: task add -- repository-url path)"
+    vars:
+      REPO: "{{index .CLI_ARGS 0}}"
+      PATH: "{{index .CLI_ARGS 1}}"
+    cmds:
+      - git submodule add {{.REPO}} {{.PATH}}
+    silent: false
+
+  # submodule 제거
+  remove:
+    desc: "submodule을 제거합니다 (사용법: task remove -- submodule-name)"
+    vars:
+      SUBMODULE: "{{.CLI_ARGS}}"
+    cmds:
+      - git submodule deinit -f {{.SUBMODULE}}
+      - rm -rf .git/modules/{{.SUBMODULE}}
+      - git rm -f {{.SUBMODULE}}
+    silent: false
+
+  # 모든 submodule의 변경사항 확인
+  diff:
+    desc: "모든 submodule의 변경사항을 확인합니다"
+    cmds:
+      - git submodule foreach 'git status'
+    silent: false
+
+  # 모든 submodule에서 특정 명령어 실행
+  foreach:
+    desc: "모든 submodule에서 특정 명령어를 실행합니다 (사용법: task foreach -- command)"
+    vars:
+      COMMAND: "{{.CLI_ARGS}}"
+    cmds:
+      - git submodule foreach {{.COMMAND}}
+    silent: false
+
+  # submodule을 최신 커밋으로 업데이트하고 커밋
+  update-and-commit:
+    desc: "모든 submodule을 최신 커밋으로 업데이트하고 변경사항을 커밋합니다"
+    cmds:
+      - git submodule update --remote --merge
+      - git add .
+      - git commit -m "Update submodules to latest commits"
+    silent: false
+
+  # submodule의 특정 브랜치로 체크아웃
+  checkout:
+    desc: "특정 submodule의 특정 브랜치로 체크아웃합니다 (사용법: task checkout -- submodule-name branch-name)"
+    vars:
+      SUBMODULE: "{{index .CLI_ARGS 0}}"
+      BRANCH: "{{index .CLI_ARGS 1}}"
+    cmds:
+      - cd {{.SUBMODULE}} && git checkout {{.BRANCH}}
+    silent: false
+
+  # 모든 submodule의 정보를 표시
+  list:
+    desc: "모든 submodule의 정보를 표시합니다"
+    cmds:
+      - git submodule status
+      - echo ""
+      - echo "Submodule URLs:"
+      - git config --file .gitmodules --get-regexp url
+    silent: false
+
+  # submodule을 동기화
+  sync:
+    desc: ".gitmodules 파일의 변경사항을 .git/config에 동기화합니다"
+    cmds:
+      - git submodule sync
+    silent: false
+
+  # 모든 submodule을 초기 상태로 재설정
+  reset:
+    desc: "모든 submodule을 초기 상태로 재설정합니다"
+    cmds:
+      - git submodule deinit -f .
+      - git submodule update --init --recursive
+    silent: false
+
+  # submodule의 변경사항을 스태시
+  stash:
+    desc: "모든 submodule의 변경사항을 스태시합니다"
+    cmds:
+      - git submodule foreach 'git stash'
+    silent: false
+
+  # submodule의 스태시된 변경사항을 적용
+  stash-pop:
+    desc: "모든 submodule의 스태시된 변경사항을 적용합니다"
+    cmds:
+      - git submodule foreach 'git stash pop'
+    silent: false
+
+  # 도움말 표시
+  help:
+    desc: "사용 가능한 모든 명령어를 표시합니다"
+    cmds:
+      - task --list
+    silent: false
